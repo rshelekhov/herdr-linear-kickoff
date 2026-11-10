@@ -1,0 +1,21 @@
+id = "rs.linear-kickoff"
+name = "Linear kickoff"
+version = "0.2.0"
+min_herdr_version = "0.9.5"
+description = "Worktree + Claude из задачи Linear"
+platforms = ["macos", "linux"]
+
+# Popup со списком задач Linear (fzf)
+[[panes]]
+id = "picker"
+title = "Linear: задачи"
+placement = "popup"
+width = "85%"
+height = "80%"
+command = ["bash", "pick.sh"]
+
+[[actions]]
+id = "pick"
+title = "Linear: worktree из задачи"
+contexts = ["workspace"]
+command = ["bash", "open-picker.sh"]
