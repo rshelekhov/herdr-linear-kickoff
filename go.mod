@@ -1,6 +1,6 @@
 module github.com/rshelekhov/herdr-linear-kickoff
 
-go 1.25.3
+go 1.26.0
 
 require (
 	github.com/BurntSushi/toml v1.6.0
@@ -10,7 +10,7 @@ require (
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/charmbracelet/x/ansi v0.11.9
 	github.com/zalando/go-keyring v0.2.8
-	golang.org/x/text v0.3.8
+	golang.org/x/text v0.43.0
 )
 
 require (
