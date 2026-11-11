@@ -1,21 +1,69 @@
 id = "rs.linear-kickoff"
 name = "Linear kickoff"
-version = "0.2.0"
+version = "0.1.0"
 min_herdr_version = "0.9.5"
-description = "Worktree + Claude из задачи Linear"
+description = "Linear issue → worktree on its branch → an agent that already knows the issue"
 platforms = ["macos", "linux"]
 
-# Popup со списком задач Linear (fzf)
+# Builds ./bin/herdr-linear-kickoff (requires Go 1.25+)
+[[build]]
+command = ["sh", "scripts/build.sh"]
+
+# Hotkey in ~/.config/herdr/config.toml:
+#   [[keys.command]]
+#   key = "prefix+alt+l"
+#   type = "plugin_action"
+#   command = "rs.linear-kickoff.open"
+# Sidebar tokens ($issue, $issue_state, $issue_title) for workspaces on an
+# issue's worktree: restored at startup, refreshed on focus (Linear at most
+# every few minutes).
+[[startup]]
+command = ["./bin/herdr-linear-kickoff", "sync", "--startup"]
+
+[[events]]
+on = "workspace.focused"
+command = ["./bin/herdr-linear-kickoff", "sync"]
+
+[[events]]
+on = "worktree.removed"
+command = ["./bin/herdr-linear-kickoff", "sync"]
+
+[[actions]]
+id = "open"
+title = "Linear: issues"
+contexts = ["global", "workspace", "pane"]
+command = ["./bin/herdr-linear-kickoff", "open"]
+
+[[actions]]
+id = "by-id"
+title = "Linear: go to issue"
+contexts = ["global", "workspace", "pane"]
+command = ["./bin/herdr-linear-kickoff", "open", "--goto"]
+
+# Ctrl+click on a Linear issue link in a terminal (needs ui.mouse_capture):
+# open the popup on that issue instead of the browser. Start stays your call.
+[[actions]]
+id = "open-link"
+title = "Linear: open linked issue"
+contexts = ["pane"]
+command = ["./bin/herdr-linear-kickoff", "open", "--link"]
+
+[[link_handlers]]
+id = "linear-issue"
+title = "Open in Linear kickoff"
+pattern = "^https://linear\\.app/[^/]+/issue/[A-Za-z0-9]+-[0-9]+"
+action = "open-link"
+
+[[actions]]
+id = "logout"
+title = "Linear: forget API key"
+contexts = ["global"]
+command = ["./bin/herdr-linear-kickoff", "logout"]
+
 [[panes]]
 id = "picker"
-title = "Linear: задачи"
+title = "Linear"
 placement = "popup"
 width = "85%"
 height = "80%"
-command = ["bash", "pick.sh"]
-
-[[actions]]
-id = "pick"
-title = "Linear: worktree из задачи"
-contexts = ["workspace"]
-command = ["bash", "open-picker.sh"]
+command = ["./bin/herdr-linear-kickoff", "ui"]
