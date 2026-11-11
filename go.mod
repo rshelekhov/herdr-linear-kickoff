@@ -10,7 +10,7 @@ require (
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/charmbracelet/x/ansi v0.11.9
 	github.com/zalando/go-keyring v0.2.8
-	golang.org/x/text v0.3.8
+	golang.org/x/text v0.41.0
 )
 
 require (

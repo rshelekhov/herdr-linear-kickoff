@@ -13,3 +13,7 @@ updates:
     groups:
       go-modules:
         patterns: ["*"]
+    ignore:
+      # 0.42+ needs Go 1.26; drop this when the plugin moves to it.
+      - dependency-name: golang.org/x/text
+        versions: [">= 0.42.0"]
