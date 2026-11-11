@@ -2,3 +2,5 @@
 .DS_Store
 
 .mnemex/
+bin/
+dist/

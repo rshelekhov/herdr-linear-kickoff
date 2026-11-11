@@ -1,0 +1,26 @@
+version: 2
+# Release binaries for users without Go: scripts/build.sh downloads the one
+# for their platform and checks it against checksums.txt.
+project_name: herdr-linear-kickoff
+
+builds:
+  - main: .
+    binary: herdr-linear-kickoff
+    env: [CGO_ENABLED=0]
+    goos: [darwin, linux]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    ldflags: [-s -w]
+
+archives:
+  - formats: [tar.gz]
+    # herdr-linear-kickoff_0.1.0_darwin_arm64.tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files: [LICENSE*, README*]
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+changelog:
+  use: github

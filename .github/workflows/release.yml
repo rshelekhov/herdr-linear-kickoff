@@ -1,0 +1,44 @@
+name: release
+
+# Push a tag vX.Y.Z (the same version as herdr-plugin.toml) to publish the
+# binaries that scripts/build.sh falls back to when Go isn't installed.
+on:
+  push:
+    tags: ["v*"]
+
+# These binaries are what users without Go download and run: every action is
+# pinned to a commit and GoReleaser to a version, so a moved tag can't change
+# what builds them. Dependabot (dependabot.yml) proposes updates.
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false # GoReleaser gets the token from env, not git config
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+
+      - name: Tag matches the manifest version
+        run: |
+          want="v$(sed -n 's/^version = "\(.*\)"/\1/p' herdr-plugin.toml)"
+          if [ "$GITHUB_REF_NAME" != "$want" ]; then
+            echo "tag $GITHUB_REF_NAME, but herdr-plugin.toml says $want" >&2
+            exit 1
+          fi
+
+      - name: Test
+        run: go test ./...
+
+      - uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
+        with:
+          version: v2.20.0
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
