@@ -8,3 +8,8 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    # One PR a month for all Go modules. CI (ci.yml) builds it with Go 1.25
+    # only, so an update that needs a newer Go fails there.
+    groups:
+      go-modules:
+        patterns: ["*"]
