@@ -202,6 +202,8 @@ work finds them.
   `base`, `repos`, `install`, `agent`, `agent_cmd`, `prompt_template`,
   `start_sets_in_progress`, `start_assigns_me`, `labels`,
   `default_mode`, `subissue_branch`, `background` (`auto` = herdr's `panel_bg`, `none`, or hex).
+- *About* at the bottom: the version from `herdr-plugin.toml` (embedded at build)
+  with the commit go stamped, and the repo link (`enter` opens, `y` copies).
 
 ## Actions and hotkeys
 

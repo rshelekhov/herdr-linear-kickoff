@@ -242,6 +242,7 @@ func main() {
 			Background: config.ResolveBackground(cfg.Background, config.HerdrConfigPath()),
 			OpenID:     os.Getenv("LK_OPEN"),
 			StartGoto:  os.Getenv("LK_GOTO") == "1",
+			Version:    version(),
 		})
 	case "demo":
 		d, cleanup, derr := demo.Setup()
@@ -254,6 +255,7 @@ func main() {
 				d.Background = bg
 			}
 		}
+		d.Version = version()
 		err = ui.Run(d)
 		cleanup()
 	case "sync": // a herdr hook: keep the sidebar's issue tokens current
