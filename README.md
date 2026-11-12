@@ -102,7 +102,7 @@ Needs herdr 0.9.5+ on macOS or Linux, and git.
 herdr plugin install rshelekhov/herdr-linear-kickoff
 ```
 
-With Go 1.25+ installed, the plugin builds from source; without it, the
+With Go 1.26+ installed, the plugin builds from source; without it, the
 release binary for your platform is downloaded and checked against the
 release's SHA-256 checksums.
 

@@ -5,7 +5,7 @@ min_herdr_version = "0.9.5"
 description = "Linear issue → worktree on its branch → an agent that already knows the issue"
 platforms = ["macos", "linux"]
 
-# Builds ./bin/herdr-linear-kickoff (requires Go 1.25+)
+# Builds ./bin/herdr-linear-kickoff (requires Go 1.26+)
 [[build]]
 command = ["sh", "scripts/build.sh"]
 
