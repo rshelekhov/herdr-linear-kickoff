@@ -166,3 +166,31 @@ func TestSettingsWorkspaceName(t *testing.T) {
 		t.Errorf("not saved: %q", c.WorkspaceName)
 	}
 }
+
+func TestSettingsAbout(t *testing.T) {
+	var opened, copied string
+	openURL = func(u string) { opened = u }
+	copyText = func(s string) { copied = s }
+	t.Cleanup(func() { openURL, copyText = openURLDefault, copyTextDefault })
+
+	m := settingsModel(t)
+	m.d.Version = "0.1.0 · 883abc6"
+	m.setCur = rowIndex(t, m, "repo")
+	v := m.View()
+	for _, s := range []string{"About", "Version", "0.1.0 · 883abc6", "github.com/rshelekhov/herdr-linear-kickoff", "y copy the link"} {
+		if !strings.Contains(v, s) {
+			t.Errorf("settings lack %q", s)
+		}
+	}
+	m = press(m, "enter")
+	if opened != repoURL {
+		t.Errorf("enter opened %q, want the repo", opened)
+	}
+	m = press(m, "y")
+	if copied != repoURL || !strings.Contains(m.View(), "copied "+repoURL) {
+		t.Errorf("y copied %q and should say so", copied)
+	}
+	if m = press(m, "up"); strings.Contains(m.View(), "copied") {
+		t.Error("the note outlives the next key")
+	}
+}

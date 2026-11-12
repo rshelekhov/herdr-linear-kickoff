@@ -192,6 +192,8 @@ The preview's last line always says where the worktree will be:
   `magus`.
 - **Install packages** — `auto` (by lockfile), `none`, or your own command.
 - **Set In Progress**, **Assign to me** — what Start changes in Linear.
+- **About** — the plugin's version (and commit), and its GitHub repo: `enter`
+  opens it, `y` copies the link.
 
 Changes are saved at once to
 `~/.config/herdr/plugins/config/rs.linear-kickoff/config.toml`, comments kept;

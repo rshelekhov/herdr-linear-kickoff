@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"cmp"
 	"fmt"
 	"os"
 	"os/exec"
@@ -28,6 +29,9 @@ type setRow struct {
 	value              string
 	hint               string // keys that do something here
 }
+
+// repoURL is where the plugin lives: its README, releases and issues.
+const repoURL = "https://github.com/rshelekhov/herdr-linear-kickoff"
 
 func onOff(b bool) string {
 	if b {
@@ -80,6 +84,8 @@ func (m model) settingRows() []setRow {
 		setRow{"install", "Start", "Install packages", installLabel(c.Install), "enter next · c custom command"},
 		setRow{"inprogress", "Start", "Set In Progress", onOff(c.StartSetsInProgress), "enter toggle"},
 		setRow{"assign", "Start", "Assign to me", onOff(c.StartAssignsMe), "enter toggle"},
+		setRow{"version", "About", "Version", cmp.Or(m.d.Version, "dev"), ""},
+		setRow{"repo", "About", "Repository", strings.TrimPrefix(repoURL, "https://"), "enter open in the browser · y copy the link"},
 	)
 	return rows
 }
@@ -139,6 +145,7 @@ func (m model) onSettingsKey(k tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m.onPickKey(k)
 	}
 	rows := m.settingRows()
+	m.setNote = ""
 	switch k.String() {
 	case "esc", "q", ",":
 		m.screen = scList
@@ -168,6 +175,12 @@ func (m model) onSettingsKey(k tea.KeyMsg) (tea.Model, tea.Cmd) {
 			return m, cmd
 		}
 		return m, nil
+	case "y":
+		if row.id == "repo" {
+			copyText(repoURL)
+			m.setNote = "copied " + repoURL
+		}
+		return m, nil
 	case "c":
 		switch row.id {
 		case "install":
@@ -184,6 +197,8 @@ func (m model) onSettingsKey(k tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m, textinput.Blink
 	}
 	switch row.id {
+	case "repo":
+		openURL(repoURL)
 	case "ws-add":
 		mm, cmd := m.toAddKey()
 		m = mm.(model)
@@ -319,6 +334,8 @@ func (m model) viewSettings() string {
 	out := []string{"  " + head, "", body}
 	if m.setErr != "" {
 		out = append(out, "", "  "+sErr.Render(m.setErr))
+	} else if m.setNote != "" {
+		out = append(out, "", "  "+sDim.Render(m.setNote))
 	}
 	return lipgloss.NewStyle().Height(m.h-1).Render(strings.Join(out, "\n")) + "\n" +
 		sBar.Width(m.w).MaxWidth(m.w).Render(ansi.Truncate(foot, m.w-4, "…"))

@@ -71,6 +71,7 @@ type Deps struct {
 	ConfigDir       string // where config.toml is, for the settings screen
 	OpenID          string // open this issue in the preview on start (link click)
 	StartGoto       bool   // start with the "go to issue" input (by-id action)
+	Version         string // shown in settings, under About
 
 	SourceRepo string // the repo the popup was opened from: its workspace is remembered
 
@@ -163,6 +164,7 @@ type model struct {
 	setEditing    string          // settings: the row being edited inline
 	setIn         textinput.Model // settings: its text field
 	setErr        string
+	setNote       string       // "copied", under the settings
 	keyMask       string       // settings: the API key, masked, read when the screen opens
 	pick          *settingPick // settings: an open picker (branch name, agent)
 	stCur         int
@@ -1408,7 +1410,9 @@ func errText(err error) string {
 	return err.Error()
 }
 
-func openURL(u string) {
+var openURL = openURLDefault
+
+func openURLDefault(u string) {
 	name := "xdg-open"
 	if runtime.GOOS == "darwin" {
 		name = "open"
@@ -1416,7 +1420,9 @@ func openURL(u string) {
 	_ = exec.Command(name, u).Start()
 }
 
-func copyText(s string) {
+var copyText = copyTextDefault
+
+func copyTextDefault(s string) {
 	for _, c := range [][]string{{"pbcopy"}, {"wl-copy"}, {"xclip", "-selection", "clipboard"}, {"xsel", "-ib"}} {
 		if _, err := exec.LookPath(c[0]); err != nil {
 			continue
